@@ -9,10 +9,16 @@ import { formSchema } from "./constants";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ChatCompletionRequestMessage } from "openai";
+import { Empty } from "@/components/empty";
+import { Loader } from "@/components/Loader";
+import { cn } from "@/lib/utils";
+import { UserAvatar } from "@/components/User-avatar";
+import { BotAvatar } from "@/components/Bot-avatar";
 
 const ConversationPage = () => {
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
@@ -81,7 +87,8 @@ const ConversationPage = () => {
               />
               <Button
                 className="col-span-12 lg:col-span-2 w-full"
-                disabled={isLoading} size="icon"
+                disabled={isLoading}
+                size="icon"
               >
                 Generate
               </Button>
@@ -89,9 +96,29 @@ const ConversationPage = () => {
           </Form>
         </div>
         <div className="space-y-4 mt-4">
+          {isLoading && (
+            <div
+              className="p-8 rounded-lg w-full flex items-center justify-center
+            bg-muted"
+            >
+              <Loader />
+            </div>
+          )}
+          {messages.length === 0 && !isLoading && (
+            <div>
+              <Empty label="No conversation started." />
+            </div>
+          )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message) => (
-              <div key={message.content}>{message.content}</div>
+              <div key={message.content}
+              className={cn("p-8 w-full flex items-start gap-x-8 rouonded-lg",
+               message.role === "user" ? "bg-white border border-black/10": "bg-muted")}>
+                  {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                <p className="text-sm">
+                  {message.content}
+                </p>
+                </div>
             ))}
           </div>
         </div>
