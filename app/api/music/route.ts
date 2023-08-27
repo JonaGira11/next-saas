@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
-import { increaseApiLimit,checkApiLimit } from "@/lib/api-limit";
+import { incrementApiLimit,checkApiLimit } from "@/lib/api-limit";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN!
@@ -37,7 +37,7 @@ export async function POST(
             }
           }
         );
-        await increaseApiLimit();
+        await incrementApiLimit();
       
   return NextResponse.json(response);
     } catch (error)  {

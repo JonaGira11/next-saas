@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { ChatCompletionResponseMessage, Configuration, OpenAIApi } from "openai";
-import { increaseApiLimit,checkApiLimit } from "@/lib/api-limit";
+import { incrementApiLimit,checkApiLimit } from "@/lib/api-limit";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -45,7 +45,7 @@ export async function POST(
             messages: [instructionsMessage, ...messages],
 
           });
-          await increaseApiLimit();
+          await incrementApiLimit();
       
   return NextResponse.json(response.data.choices[0].message);
     } catch (error)  {
